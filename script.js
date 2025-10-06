@@ -1,47 +1,59 @@
-/** @format */
+let employees = [];
+let idCounter = 1;
 
-let arr = [
-  { id: 1, name: "john", age: "18", profession: "developer" },
-  { id: 2, name: "jack", age: "20", profession: "developer" },
-  { id: 3, name: "karen", age: "19", profession: "admin" },
-];
+const form = document.getElementById("employeeForm");
+const messageDiv = document.getElementById("message");
+const employeeList = document.getElementById("employeeList");
 
-function PrintDeveloperbyMap() {
-  //Write your code here , just console.log
-  arr.map((emp) => {
-    if (emp.profession == "developer") {
-      console.log(emp);
-    }
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const profession = document.getElementById("profession").value.trim();
+  const age = document.getElementById("age").value.trim();
+
+  // Validation
+  if (name === "" || profession === "" || age === "") {
+    showMessage("Error: All fields are required!", "error");
+    return;
+  }
+  // Add new employee
+  const newEmployee = {
+    id: idCounter++,
+    name,
+    profession,
+    age: parseInt(age),
+  };
+
+  employees.push(newEmployee);
+  showMessage("Success: Employee added successfully!", "success");
+
+  renderEmployees();
+
+  // Reset form
+  form.reset();
+});
+
+function showMessage(text, type) {
+  messageDiv.textContent = text;
+  messageDiv.className = "message " + type;
+}
+
+function renderEmployees() {
+  employeeList.innerHTML = "";
+  employees.forEach((emp) => {
+    const div = document.createElement("div");
+    showMessage("Success: Employee added successfully!", "success");
+    div.className = "employee-card";
+    div.innerHTML = `
+    <div class="employee-details"><pre> ID: ${emp.id}          Name: ${emp.name}          Profession: ${emp.profession}          Age: ${emp.age}</pre></div>
+    <button class="delete-btn" onclick="deleteEmployee(${emp.id})">Delete</button>`;
+    employeeList.appendChild(div);
   });
 }
 
-function PrintDeveloperbyForEach() {
-  //Write your code here , just console.log
-  arr.forEach((emp) => {
-    if (emp.profession == "developer") {
-      console.log(emp);
-    }
-  });
-}
-
-function addData() {
-  //Write your code here, just console.log
-  arr.push({ id: 4, name: "susan", age: "20", profession: "intern" });
-  console.log(arr);
-}
-
-function removeAdmin() {
-  //Write your code here, just console.log
-  arr = arr.filter((emp) => emp.profession != "admin");
-  console.log(arr);
-}
-
-function concatenateArray() {
-  //Write your code here, just console.log
-  const arr1 = [
-    { id: 5, name: "rose", age: "24", profession: "Software Tester" },
-    { id: 6, name: "modi", age: "26", profession: "Software Trainee" },
-    { id: 7, name: "Abdul", age: "30", profession: "Bug Hunter" },
-  ];
-  console.log(arr.concat(arr1));
+function deleteEmployee(id) {
+  employees = employees.filter((emp) => emp.id !== id);
+  showMessage("Success: Employee deleted successfully!", "success");
+  renderEmployees();
 }
